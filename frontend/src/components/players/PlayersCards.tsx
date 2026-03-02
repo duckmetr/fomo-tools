@@ -56,7 +56,7 @@ const PaginationControls = ({
   onNext
 }: PaginationControlsProps) => {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center flex-wrap gap-2">
       <Button disabled={page === 1} onClick={onPrev} size="sm" type="button" variant="outline">
         <ChevronLeft className="size-4" />
         Previous
@@ -229,7 +229,7 @@ export const PlayersCards = () => {
         </Button>
 
         <Select onValueChange={(value) => updateQuery({ page: 1, race: value })} value={raceFilter}>
-          <SelectTrigger className="w-[150px] bg-white text-black" size="sm">
+          <SelectTrigger className="w-35 bg-white text-black" size="sm">
             <SelectValue placeholder="All races" />
           </SelectTrigger>
           <SelectContent className="bg-white text-black">
@@ -246,7 +246,7 @@ export const PlayersCards = () => {
           onValueChange={(value) => updateQuery({ level: value, page: 1 })}
           value={String(levelFilter)}
         >
-          <SelectTrigger className="w-[150px] bg-white text-black" size="sm">
+          <SelectTrigger className="w-35 bg-white text-black" size="sm">
             <SelectValue placeholder="All levels" />
           </SelectTrigger>
           <SelectContent className="bg-white text-black">
@@ -284,8 +284,8 @@ export const PlayersCards = () => {
 
           return (
             <a className="block" href={profileUrl} key={player.id} rel="noreferrer" target="_blank">
-              <Card className="h-full transition-colors hover:bg-accent/40">
-                <CardContent className="flex h-full flex-col gap-3">
+              <Card className="h-full py-3 transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(0,0,0,0.18)]">
+                <CardContent className="flex flex-col gap-3 px-3 h-full">
                   <PlayerAvatar avatar={player.avatar} name={player.name} race={player.race} />
 
                   <div className="space-y-1">
