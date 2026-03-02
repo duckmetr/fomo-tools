@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router'
-import HomePage from '@/pages/HomePage.tsx'
+import { HomePage } from '@/pages/Home'
 import '@/styles/globals.css'
 
 const queryClient = new QueryClient()
