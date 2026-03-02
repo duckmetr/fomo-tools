@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -34,6 +35,64 @@ type Player = {
 const TELEGRAM_PROFILE_URL = 'https://t.me/fomo_fighters_bot/game?startapp=profile_'
 
 const allPlayers = playersData as Player[]
+
+type PaginationControlsProps = {
+  page: number
+  totalPages: number
+  pageInput: string
+  setPageInput: (value: string) => void
+  commitPageInput: () => void
+  onPrev: () => void
+  onNext: () => void
+}
+
+const PaginationControls = ({
+  page,
+  totalPages,
+  pageInput,
+  setPageInput,
+  commitPageInput,
+  onPrev,
+  onNext
+}: PaginationControlsProps) => {
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <Button disabled={page === 1} onClick={onPrev} size="sm" type="button" variant="outline">
+        <ChevronLeft className="size-4" />
+        Previous
+      </Button>
+      <p className="flex items-center gap-2 text-sm text-muted-foreground">
+        Page
+        <Input
+          className="h-8 w-20 bg-white text-black [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          inputMode="numeric"
+          max={totalPages}
+          min={1}
+          onBlur={commitPageInput}
+          onChange={(event) => setPageInput(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              commitPageInput()
+            }
+          }}
+          type="number"
+          value={pageInput}
+        />
+        of {totalPages}
+      </p>
+      <Button
+        disabled={page === totalPages}
+        onClick={onNext}
+        size="sm"
+        type="button"
+        variant="outline"
+      >
+        Next
+        <ChevronRight className="size-4" />
+      </Button>
+    </div>
+  )
+}
 
 export const PlayersCards = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -170,14 +229,14 @@ export const PlayersCards = () => {
         </Button>
 
         <Select onValueChange={(value) => updateQuery({ page: 1, race: value })} value={raceFilter}>
-          <SelectTrigger className="w-[150px]" size="sm">
+          <SelectTrigger className="w-[150px] bg-white text-black" size="sm">
             <SelectValue placeholder="All races" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white text-black">
             <SelectItem value="all">All races</SelectItem>
             {raceOptions.map((race) => (
               <SelectItem key={race} value={race}>
-                {race}
+                {race.charAt(0).toUpperCase() + race.slice(1)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -187,10 +246,10 @@ export const PlayersCards = () => {
           onValueChange={(value) => updateQuery({ level: value, page: 1 })}
           value={String(levelFilter)}
         >
-          <SelectTrigger className="w-[150px]" size="sm">
+          <SelectTrigger className="w-[150px] bg-white text-black" size="sm">
             <SelectValue placeholder="All levels" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white text-black">
             <SelectItem value="all">All levels</SelectItem>
             {levelOptions.map((level) => (
               <SelectItem key={level} value={String(level)}>
@@ -203,7 +262,17 @@ export const PlayersCards = () => {
         <p className="text-sm text-muted-foreground">Total: {visiblePlayers.length}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <PaginationControls
+        commitPageInput={commitPageInput}
+        onNext={() => updateQuery({ page: Math.min(totalPages, page + 1) })}
+        onPrev={() => updateQuery({ page: Math.max(1, page - 1) })}
+        page={page}
+        pageInput={pageInput}
+        setPageInput={setPageInput}
+        totalPages={totalPages}
+      />
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {pagedPlayers.map((player) => {
           const profileUrl = `${TELEGRAM_PROFILE_URL}${player.id}`
 
@@ -249,44 +318,15 @@ export const PlayersCards = () => {
         })}
       </div>
 
-      <div className="flex items-center justify-center gap-2">
-        <Button
-          disabled={page === 1}
-          onClick={() => updateQuery({ page: Math.max(1, page - 1) })}
-          size="sm"
-          type="button"
-          variant="outline"
-        >
-          Previous
-        </Button>
-        <p className="text-sm text-muted-foreground">
-          Page {page} of {totalPages}
-        </p>
-        <Input
-          className="h-8 w-20"
-          inputMode="numeric"
-          max={totalPages}
-          min={1}
-          onBlur={commitPageInput}
-          onChange={(event) => setPageInput(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              commitPageInput()
-            }
-          }}
-          type="number"
-          value={pageInput}
-        />
-        <Button
-          disabled={page === totalPages}
-          onClick={() => updateQuery({ page: Math.min(totalPages, page + 1) })}
-          size="sm"
-          type="button"
-          variant="outline"
-        >
-          Next
-        </Button>
-      </div>
+      <PaginationControls
+        commitPageInput={commitPageInput}
+        onNext={() => updateQuery({ page: Math.min(totalPages, page + 1) })}
+        onPrev={() => updateQuery({ page: Math.max(1, page - 1) })}
+        page={page}
+        pageInput={pageInput}
+        setPageInput={setPageInput}
+        totalPages={totalPages}
+      />
     </section>
   )
 }
