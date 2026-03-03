@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const apiHash = 'dbd3310133bdd46d6fe59bb52817005d'
-const apiKey = 'cfded29b5bde95f37f9e39c753983677c2dd6210177d76360d8524944c70d8dd'
-const apiTime = '1771005203'
+const apiHash = ''
+const apiKey = ''
+const apiTime = ''
 
 export const api = axios.create({
   baseURL: 'https://api.fomofighters.xyz',

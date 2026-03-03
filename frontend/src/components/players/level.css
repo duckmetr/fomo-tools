@@ -1,0 +1,12 @@
+.level {
+  display: inline-block;
+  background: url(/images/assets/level.svg) center / contain no-repeat;
+  text-align: center;
+  width: 1.4em;
+  height: 1.4em;
+  line-height: 1.3em;
+}
+
+.level span {
+  font-size: 0.85em;
+}

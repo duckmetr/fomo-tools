@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-
+import WebApp from '@twa-dev/sdk'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select'
 import playersData from '@/store/players.json'
 import { PlayerAvatar } from './PlayerAvatar'
+import './level.css'
 
 const PAGE_SIZE = 50
 
@@ -44,6 +45,14 @@ type PaginationControlsProps = {
   commitPageInput: () => void
   onPrev: () => void
   onNext: () => void
+}
+
+function openLink(url: string) {
+  if (WebApp.initDataUnsafe?.user) {
+    WebApp.openTelegramLink(url)
+  } else {
+    window.open(url, '_blank')
+  }
 }
 
 const PaginationControls = ({
@@ -262,17 +271,7 @@ export const PlayersCards = () => {
         <p className="text-sm text-muted-foreground">Total: {visiblePlayers.length}</p>
       </div>
 
-      <PaginationControls
-        commitPageInput={commitPageInput}
-        onNext={() => updateQuery({ page: Math.min(totalPages, page + 1) })}
-        onPrev={() => updateQuery({ page: Math.max(1, page - 1) })}
-        page={page}
-        pageInput={pageInput}
-        setPageInput={setPageInput}
-        totalPages={totalPages}
-      />
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {pagedPlayers.map((player) => {
           const profileUrl = `${TELEGRAM_PROFILE_URL}${player.id}`
 
@@ -283,37 +282,40 @@ export const PlayersCards = () => {
           ].filter(Boolean)
 
           return (
-            <a className="block" href={profileUrl} key={player.id} rel="noreferrer" target="_blank">
-              <Card className="h-full py-3 transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(0,0,0,0.18)]">
-                <CardContent className="flex flex-col gap-3 px-3 h-full">
-                  <PlayerAvatar avatar={player.avatar} name={player.name} race={player.race} />
+            <Card
+              key={player.id}
+              className="h-full py-3 transition-[box-shadow,transform] cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(0,0,0,0.18)]"
+              onClick={() => openLink(profileUrl)}
+            >
+              <CardContent className="flex flex-col gap-3 px-3 h-full">
+                <PlayerAvatar avatar={player.avatar} name={player.name} race={player.race} />
 
-                  <div className="space-y-1">
-                    <p className="line-clamp-2 text-sm font-semibold">
-                      {player.name || 'Unknown player'}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Race: {player.race}</p>
-                    <p className="text-xs text-muted-foreground">Level: {player.level}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Power: {player.power.toLocaleString('en-US')}
-                    </p>
+                <div className="space-y-1">
+                  <div className="flex items-start gap-1">
+                    <span className="level shrink-0">
+                      <span>{player.level}</span>
+                    </span>
+                    <p className="text-sm font-semibold">{player.name || 'Unknown player'}</p>
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Power: {player.power.toLocaleString('en-US')}
+                  </p>
+                </div>
 
-                  {badges.length > 0 ? (
-                    <div className="mt-auto flex flex-wrap gap-1">
-                      {badges.map((badge) => (
-                        <span
-                          className="rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
-                          key={badge}
-                        >
-                          {badge}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                </CardContent>
-              </Card>
-            </a>
+                {badges.length > 0 ? (
+                  <div className="mt-auto flex flex-wrap gap-1">
+                    {badges.map((badge) => (
+                      <span
+                        className="rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
+                        key={badge}
+                      >
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
           )
         })}
       </div>
