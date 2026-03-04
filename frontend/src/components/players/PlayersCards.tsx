@@ -23,19 +23,39 @@ type LevelFilter = 'all' | number
 
 type Player = {
   id: number
+  publicId: string
   name: string
-  race: string
   avatar: string | null
+  type: string
+  race: string
+  distance: number | null
   level: number
   power: number
-  isOwner: boolean
-  isDeputy: boolean
+  killPoints: number
+  influencerChannel: string | null
   isInfluencer: boolean
+  isGamePremium: boolean
+  clanId: number | null
+  clanName: string | null
+  clanLevel: number | null
+  clanIconColor: string | null
+  clanIconName: string | null
+  clanPoints: number
+  isCanAttack: boolean
+  logsCount: number
+  protectionDateEnd: string | null
+  heroCreationDate: string
+  hasClanHistory: boolean
+  badges: string
+  // isOwner: boolean
+  // isDeputy: boolean
 }
 
 const TELEGRAM_PROFILE_URL = 'https://t.me/fomo_fighters_bot/game?startapp=profile_'
 
-const allPlayers = playersData as Player[]
+const allPlayers0 = playersData as Player[]
+
+const allPlayers = allPlayers0.filter((player) => player.race !== null)
 
 type PaginationControlsProps = {
   page: number
@@ -273,11 +293,11 @@ export const PlayersCards = () => {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {pagedPlayers.map((player) => {
-          const profileUrl = `${TELEGRAM_PROFILE_URL}${player.id}`
+          const profileUrl = `${TELEGRAM_PROFILE_URL}${player.publicId}`
 
           const badges = [
-            player.isOwner ? 'Owner' : null,
-            player.isDeputy ? 'Deputy' : null,
+            // player.isOwner ? 'Owner' : null,
+            // player.isDeputy ? 'Deputy' : null,
             player.isInfluencer ? 'Influencer' : null
           ].filter(Boolean)
 
@@ -300,6 +320,10 @@ export const PlayersCards = () => {
                   <p className="text-xs text-muted-foreground">
                     Power: {player.power.toLocaleString('en-US')}
                   </p>
+                  <p className="text-xs text-muted-foreground">
+                    Distance: {player.distance ?? 'N/A'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Clan: {player.clanName ?? 'N/A'}</p>
                 </div>
 
                 {badges.length > 0 ? (
