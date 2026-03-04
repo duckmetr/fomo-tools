@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import WebApp from '@twa-dev/sdk'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -51,7 +51,8 @@ type Player = {
   // isDeputy: boolean
 }
 
-const TELEGRAM_PROFILE_URL = 'https://t.me/fomo_fighters_bot/game?startapp=profile_'
+const TELEGRAM_PROFILE_URL = 'https://t.me/fomo_fighters_bot/game?startapp=profile'
+const TELEGRAM_CLAN_URL = 'https://t.me/fomo_fighters_bot/game?startapp=clan'
 
 const allPlayers0 = playersData as Player[]
 
@@ -125,6 +126,7 @@ const PaginationControls = ({
 
 export const PlayersCards = () => {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [showScrollTop, setShowScrollTop] = useState(false)
 
   const raceOptions = useMemo(() => {
     return [...new Set(allPlayers.map((player) => player.race))].sort((a, b) => a.localeCompare(b))
@@ -230,6 +232,19 @@ export const PlayersCards = () => {
     setPageInput(String(page))
   }, [page])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300)
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   const commitPageInput = () => {
     const parsed = Number(pageInput)
     if (!Number.isInteger(parsed) || parsed < 1) {
@@ -293,7 +308,7 @@ export const PlayersCards = () => {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {pagedPlayers.map((player) => {
-          const profileUrl = `${TELEGRAM_PROFILE_URL}${player.publicId}`
+          const profileUrl = `${TELEGRAM_PROFILE_URL}_${player.publicId}`
 
           const badges = [
             // player.isOwner ? 'Owner' : null,
@@ -323,7 +338,23 @@ export const PlayersCards = () => {
                   <p className="text-xs text-muted-foreground">
                     Distance: {player.distance ?? 'N/A'}
                   </p>
-                  <p className="text-xs text-muted-foreground">Clan: {player.clanName ?? 'N/A'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Clan:{' '}
+                    {player.clanId ? (
+                      <span
+                        className="hover:underline"
+                        onClick={(event) => {
+                          event.preventDefault()
+                          event.stopPropagation()
+                          openLink(`${TELEGRAM_CLAN_URL}_${player.clanId}`)
+                        }}
+                      >
+                        {player.clanName}
+                      </span>
+                    ) : (
+                      'N/A'
+                    )}
+                  </p>
                 </div>
 
                 {badges.length > 0 ? (
@@ -353,6 +384,18 @@ export const PlayersCards = () => {
         setPageInput={setPageInput}
         totalPages={totalPages}
       />
+
+      <Button
+        aria-label="Scroll to top"
+        className={`fixed right-4 bottom-4 z-50 size-10 rounded-full p-0 shadow-md transition-all duration-200 origin-center ${
+          showScrollTop ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
+        }`}
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        size="icon"
+        type="button"
+      >
+        <ArrowUp className="size-5" />
+      </Button>
     </section>
   )
 }

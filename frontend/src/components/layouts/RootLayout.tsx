@@ -1,14 +1,13 @@
 import { Outlet } from 'react-router'
+import { Header } from '@/components/layouts/Header'
+import { Footer } from '@/components/layouts/Footer'
 
 export const RootLayout = () => {
   return (
     <>
-      <header>
-        <h1>Root Layout</h1>
-      </header>
-      <main>
-        <Outlet />
-      </main>
+      <Header />
+      <Outlet />
+      <Footer />
     </>
   )
 }
