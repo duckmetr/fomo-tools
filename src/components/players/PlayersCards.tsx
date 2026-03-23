@@ -151,12 +151,15 @@ export const PlayersCards = () => {
         ? parsedLevel
         : 'all'
 
+  const influencerOnly = searchParams.get('influencer') === '1'
+
   const visiblePlayers = useMemo(() => {
     const filtered = allPlayers.filter((player) => {
       const raceMatches = raceFilter === 'all' || player.race === raceFilter
       const levelMatches = levelFilter === 'all' || player.level === levelFilter
+      const influencerMatches = !influencerOnly || player.isInfluencer === true
 
-      return raceMatches && levelMatches
+      return raceMatches && levelMatches && influencerMatches
     })
 
     filtered.sort((a, b) => {
@@ -168,7 +171,7 @@ export const PlayersCards = () => {
     })
 
     return filtered
-  }, [levelFilter, raceFilter, sortOrder])
+  }, [influencerOnly, levelFilter, raceFilter, sortOrder])
 
   const totalPages = Math.max(1, Math.ceil(visiblePlayers.length / PAGE_SIZE))
 
@@ -180,11 +183,13 @@ export const PlayersCards = () => {
     sort?: SortOrder
     race?: string
     level?: string
+    influencer?: boolean
     page?: number
   }) => {
     const nextSort = updates.sort ?? sortOrder
     const nextRace = updates.race ?? raceFilter
     const nextLevel = updates.level ?? String(levelFilter)
+    const nextInfluencer = updates.influencer ?? influencerOnly
     const nextPage = updates.page ?? page
 
     const next = new URLSearchParams(searchParams)
@@ -197,6 +202,9 @@ export const PlayersCards = () => {
 
     if (nextLevel === 'all') next.delete('level')
     else next.set('level', nextLevel)
+
+    if (!nextInfluencer) next.delete('influencer')
+    else next.set('influencer', '1')
 
     if (nextPage <= 1) next.delete('page')
     else next.set('page', String(nextPage))
@@ -214,6 +222,9 @@ export const PlayersCards = () => {
       (normalizedLevel === 'all'
         ? !searchParams.get('level')
         : searchParams.get('level') === normalizedLevel) &&
+      (influencerOnly
+        ? searchParams.get('influencer') === '1'
+        : !searchParams.get('influencer')) &&
       (page <= 1 ? !searchParams.get('page') : searchParams.get('page') === String(page))
 
     if (!isNormalized) {
@@ -221,10 +232,11 @@ export const PlayersCards = () => {
         sort: sortOrder,
         race: raceFilter,
         level: normalizedLevel,
+        influencer: influencerOnly,
         page
       })
     }
-  }, [levelFilter, page, raceFilter, searchParams, sortOrder])
+  }, [influencerOnly, levelFilter, page, raceFilter, searchParams, sortOrder])
 
   const [pageInput, setPageInput] = useState(String(page))
 
@@ -303,12 +315,41 @@ export const PlayersCards = () => {
           </SelectContent>
         </Select>
 
+        <label className="flex items-center gap-2 rounded-md border border-input bg-white px-2 py-1 text-sm text-black">
+          <input
+            checked={influencerOnly}
+            className="h-4 w-4 accent-black"
+            onChange={(event) =>
+              updateQuery({ influencer: event.target.checked, page: 1 })
+            }
+            type="checkbox"
+          />
+          Influencers only
+        </label>
+
         <p className="text-sm text-muted-foreground">Total: {visiblePlayers.length}</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {pagedPlayers.map((player) => {
           const profileUrl = `${TELEGRAM_PROFILE_URL}_${player.publicId}`
+          const rawChannel = player.influencerChannel?.trim() ?? ''
+          const hasChannel = rawChannel.length > 0
+          const channelHandle = (() => {
+            if (!hasChannel) return ''
+            if (/^https?:\/\//i.test(rawChannel)) {
+              const withoutQuery = rawChannel.split('?')[0]
+              const parts = withoutQuery.split('/').filter(Boolean)
+              return parts.length > 0 ? parts[parts.length - 1] : ''
+            }
+            return rawChannel.startsWith('@') ? rawChannel.slice(1) : rawChannel
+          })()
+          const isInviteLink = channelHandle.startsWith('+')
+          const channelHref = (() => {
+            if (!hasChannel) return ''
+            if (/^https?:\/\//i.test(rawChannel)) return rawChannel
+            return `https://t.me/${channelHandle}`
+          })()
 
           const badges = [
             // player.isOwner ? 'Owner' : null,
@@ -355,6 +396,26 @@ export const PlayersCards = () => {
                       'N/A'
                     )}
                   </p>
+                  {player.isInfluencer ? (
+                    <p className="text-xs text-muted-foreground">
+                      Channel:{' '}
+                      {hasChannel ? (
+                        <a
+                          className="hover:underline"
+                          href={channelHref}
+                          onClick={(event) => event.stopPropagation()}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          {isInviteLink
+                            ? channelHandle
+                            : `@${channelHandle || rawChannel.replace(/^@/, '')}`}
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </p>
+                  ) : null}
                 </div>
 
                 {badges.length > 0 ? (
