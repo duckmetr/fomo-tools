@@ -1,1 +1,11 @@
-export type TranslationKeys = 'greeting' | 'start.button' | 'help.text'
+export type TranslationKeys =
+  | 'greeting'
+  | 'daily-riddle-broadcast'
+  | 'help-text'
+  | 'riddle-btn'
+  | 'hour-btn'
+  | 'settings-btn'
+  | 'back-btn'
+  | 'home-btn'
+  | 'happy-hour-upcoming'
+  | 'happy-hour-active'

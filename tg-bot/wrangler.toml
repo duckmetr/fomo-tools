@@ -7,3 +7,8 @@ compatibility_flags = ["nodejs_compat"]
 type = "Text"
 globs = ["**/*.ftl"]
 fallthrough = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "fomo-tools-bot-db"
+database_id = "5df34c6f-410e-407f-99e3-2deb842f0d8e"

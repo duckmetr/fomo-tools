@@ -29,7 +29,7 @@ class Launcher {
     this.env = options.env
     this.port = options.webhook?.port ?? 3000
     this.path = options.webhook?.path ?? `/bot/${this.bot.token}`
-    this.updates = options.updates ?? ['message']
+    this.updates = options.updates ?? ['message', 'channel_post']
     this.init()
   }
 

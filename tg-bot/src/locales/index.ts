@@ -39,4 +39,4 @@ const i18n = useFluent({
   defaultLocale: 'en'
 })
 
-export { i18n }
+export { i18n, fluent }
