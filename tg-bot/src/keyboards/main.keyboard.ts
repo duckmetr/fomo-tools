@@ -1,5 +1,5 @@
 import { Keyboard } from 'grammy'
-import { PREMIUM_EMOJI } from '../config/vars'
+import { PREMIUM_EMOJI } from '../config/emoji'
 
 import type { Context } from '../types/context.type'
 

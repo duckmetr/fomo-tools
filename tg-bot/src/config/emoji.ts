@@ -1,7 +1,3 @@
-export const BOT_INFO = {}
-
-export const FOMO_FIGHTERS_REF = 'https://t.me/fomo_fighters_bot/game?startapp=ref541625404'
-
 export const PREMIUM_EMOJI: Record<string, string> = {
   '👋': '5269289899932026949',
   '📋': '5197269100878907942',
@@ -13,5 +9,9 @@ export const PREMIUM_EMOJI: Record<string, string> = {
   '🙂': '5371073319107827779',
   '⏱️': '5382194935057372936',
   '⏳': '5451732530048802485',
-  '🔥': '5269423829897238877'
+  '🔥': '5269423829897238877',
+  '🗓': '5274055917766202507',
+  '😎': '5364105417569868801',
+  '🎁': '5203996991054432397',
+  '💎': '5814462683067454974'
 }

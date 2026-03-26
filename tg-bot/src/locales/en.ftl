@@ -14,9 +14,13 @@ greeting =
 
 
 help-text =
-   Available commands:
+   📋 Available commands:
    /start
    /help
+   /settings
+   /riddle
+   /hour
+   /donate
 
 
 daily-riddle-broadcast =
@@ -25,39 +29,38 @@ daily-riddle-broadcast =
    Answer: <code>{ $answerText }</code>
 
    💡 <i>Click on the answer to copy</i>
-   🙂 <i>Don't forget to enter in the game!</i>
-
-   ⚙️ Settings: /settings
+   🙂 <i>Don't forget to enter in the game</i>
 
 
-happy-hour-upcoming =
+happy-hour =
    ⏰ HAPPY HOUR
-
-   <i>When buying Gems during happy hours, you can get a random bonus of up to 1000%. Minimum bonus 10%</i>
-
-   Next happy hour:
-
-   <blockquote>{ $date }, { $startTime } - { $endTime }
-   Starts in: { $startsIn }</blockquote>
-
-   Timezone UTC+2
-
-happy-hour-active =
-   ⏰ HAPPY HOUR
-
-   <i>When buying Gems during happy hours, you can get a random bonus of up to 1000%. Minimum bonus 10%</i>
-
-   🔥 NOW ACTIVE
-
-   <blockquote>{ $activeStart } - { $activeEnd }
-   Remaining: { $remaining }</blockquote>
-
-   Next happy hour:
-
-   <blockquote>{ $nextDate } { $nextStart } - { $nextEnd }
+   { $status ->
+      [active]
+         🔥 ACTIVE NOW
+         <blockquote>{ $activeStart }-{ $activeEnd }
+         Remaining: { $remaining }</blockquote>
+      *[upcoming] { "" }
+   }
+   🗓 Next happy hour:
+   <blockquote>{ $nextDate } • { $nextStart }-{ $nextEnd }
    It will start in: { $nextStartsIn }</blockquote>
 
-   Timezone UTC+2
+   💡 <i>When buying Gems during happy hours, you can get a random bonus of up to 1000%. Minimum bonus 10%</i>
+
+
+settings =
+   ⚙️ Settings
+
+   😎 <i>Keep Calm</i>
+
+
+donate =
+   🎁 SUPPORT THE PROJECT
+
+   <i>Thank you for your interest in our project</i>
+
+   💎 Donate to the TON wallet:
+   <code>{ $wallet }</code>
 
 
 ## buttons

@@ -39,17 +39,14 @@ export async function getTodayAnswerText() {
     return null
   }
 
-  const recentAnswers = await prisma.answer.findMany({
+  const latestAnswer = await prisma.answer.findFirst({
     orderBy: {
       createdAt: 'desc'
     },
-    take: 50,
     select: {
-      answerText: true,
-      createdAt: true
+      answerText: true
     }
   })
 
-  const todayAnswer = recentAnswers.find((answer) => isTodayInKyiv(answer.createdAt))
-  return todayAnswer?.answerText ?? null
+  return latestAnswer?.answerText ?? null
 }

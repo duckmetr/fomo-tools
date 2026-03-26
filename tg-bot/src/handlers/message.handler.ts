@@ -9,9 +9,17 @@ export function messageHandler(bot: Bot<Context>) {
       const messageText = ctx.message.text.trim()
       const riddleButtonText = ctx.t('riddle-btn')
       const hourButtonText = ctx.t('hour-btn')
+      const settingsButtonText = ctx.t('settings-btn')
 
       if (messageText === hourButtonText) {
-        await ctx.reply(buildLocalizedHappyHourMessage(ctx.from?.language_code), {
+        await ctx.reply(await buildLocalizedHappyHourMessage(ctx.from?.language_code), {
+          parse_mode: 'HTML'
+        })
+        return
+      }
+
+      if (messageText === settingsButtonText) {
+        await ctx.reply(ctx.t('settings'), {
           parse_mode: 'HTML'
         })
         return

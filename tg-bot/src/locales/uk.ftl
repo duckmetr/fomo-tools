@@ -14,9 +14,13 @@ greeting =
 
 
 help-text =
-   Доступні команди:
+   📋 Доступні команди:
    /start
    /help
+   /settings
+   /riddle
+   /hour
+   /donate
 
 
 daily-riddle-broadcast =
@@ -25,39 +29,38 @@ daily-riddle-broadcast =
    Відповідь: <code>{ $answerText }</code>
 
    💡 <i>Натисни на відповідь, щоб скопіювати</i>
-   🙂 <i>Не забудь ввести її в грі!</i>
-
-   ⚙️ Налаштування: /settings
+   🙂 <i>Не забудь ввести її в грі</i>
 
 
-happy-hour-upcoming =
+happy-hour =
    ⏰ ЩАСЛИВА ГОДИНА
-
-   <i>Під час купівлі Gems у щасливі години ти можеш отримати випадковий бонус до 1000%. Мінімальний бонус 10%</i>
-
-   Наступна щаслива година:
-
-   <blockquote>{ $date }, { $startTime }-{ $endTime }
-   Почнеться через: { $startsIn }</blockquote>
-
-   Часовий пояс UTC+2
-
-happy-hour-active =
-   ⏰ ЩАСЛИВА ГОДИНА
-
-   <i>Під час купівлі Gems у щасливі години ти можеш отримати випадковий бонус до 1000%. Мінімальний бонус 10%</i>
-
-   🔥 АКТИВНО ЗАРАЗ 🔥
-
-   <blockquote>{ $activeStart } - { $activeEnd }
-   Залишилось: { $remaining }</blockquote>
-
-   Наступна щаслива година:
-
-   <blockquote>{ $nextDate } { $nextStart } - { $nextEnd }
+   { $status ->
+      [active]
+         🔥 АКТИВНО ЗАРАЗ
+         <blockquote>{ $activeStart }-{ $activeEnd }
+         Залишилось: { $remaining }</blockquote>
+      *[upcoming] { "" }
+   }
+   🗓 Наступна щаслива година:
+   <blockquote>{ $nextDate } • { $nextStart }-{ $nextEnd }
    Почнеться через: { $nextStartsIn }</blockquote>
 
-   Часовий пояс UTC+2
+   💡 <i>Під час купівлі Gems у щасливі години ти можеш отримати випадковий бонус до 1000%. Мінімальний бонус 10%</i>
+
+
+settings =
+   ⚙️ Налаштування
+
+   😎 <i>Повний Чіл</i>
+
+
+donate =
+   🎁 ПІДТРИМАТИ ПРОЄКТ
+
+   <i>Дякуємо за ваш інтерес до нашого проєкту</i>
+
+   💎 Задонатити на гаманець TON:
+   <code>{ $wallet }</code>
 
 
 ## buttons

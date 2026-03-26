@@ -1,6 +1,6 @@
 import { Fluent } from '@moebius/fluent'
 import { useFluent } from '@grammyjs/fluent'
-import { PREMIUM_EMOJI } from '../config/vars'
+import { PREMIUM_EMOJI } from '../config/emoji'
 import { useCustomEmoji } from '../utils/emoji'
 
 let en: string

@@ -1,0 +1,9 @@
+model HappyHourSetting {
+  id              Int      @id
+  startAt         DateTime @map("start_at")
+  setByTelegramId BigInt   @map("set_by_telegram_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("happy_hour_settings")
+}
